@@ -88,11 +88,18 @@ WSGI_APPLICATION = "booktime.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        #"ENGINE": "django.db.backends.sqlite3",
+        #"NAME": BASE_DIR / "db.sqlite3",
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'abdelrahmanibrahim',
+        'PASSWORD': 'Cr58915891&',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
+AUTH_USER_MODEL = "main.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -128,7 +135,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "main/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
