@@ -1,0 +1,18 @@
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 300px;
+}
+
+.input-group .form-control {
+    margin-right: 10px; /* Adjust the margin to add spacing */
+
+}
+
+.input-group-btn {
+    position: relative;
+    width: auto;
+    margin-right: 5px;
+    vertical-align: middle;
+    white-space: nowrap;
+}

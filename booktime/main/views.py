@@ -2,8 +2,12 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
-from django.shortcuts import get_object_or_404
-from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormView, CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from . import forms, models
@@ -48,7 +52,7 @@ class ContactUsView(FormView):
 # Registration Page
 class SignupView(FormView):
     template_name = "signup.html"
-    form_class = forms.UserCreationForm
+    form_class = forms.UserCreationForm  # ModelForm pattern: a form that manages loading, validation, and saving
 
     def get_success_url(self):
         redirect_to = self.request.GET.get("next", "/")
@@ -68,3 +72,101 @@ class SignupView(FormView):
         )
 
         return response
+
+
+class AddressListView(LoginRequiredMixin, ListView):
+    model = models.Address
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class AddressCreateView(LoginRequiredMixin, CreateView):
+    model = models.Address
+    fields = [
+        "name",
+        "address1",
+        "address2",
+        "zip_code",
+        "city",
+        "country", ]
+    success_url = reverse_lazy("address_list")
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.user = self.request.user
+        obj.save()
+        return super().form_valid(form)
+
+
+class AddressUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.Address
+    fields = [
+        "name",
+        "address1",
+        "address2",
+        "zip_code",
+        "city",
+        "country",
+    ]
+    success_url = reverse_lazy("address_list")
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class AddressDeleteView(LoginRequiredMixin, DeleteView):
+    model = models.Address
+    success_url = reverse_lazy("address_list")
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+def add_to_basket(request):
+    """
+    In this view we can rely on the middleware to position
+    the existing basket inside the request.basket attribute.
+    This will only work if the basket exists, and its id is in the session already.
+    This view will also take care of creating a basket if it does not exist yet,
+    and do the necessary steps for the middleware to work for any following request.
+
+    """
+    product = get_object_or_404(
+        models.Product, pk=request.GET.get("product_id")
+    )
+    basket = request.basket
+    if not request.basket:
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = None
+        basket = models.Basket.objects.create(user=user)
+        request.session["basket_id"] = basket.id
+    basketline, created = models.BasketLine.objects.get_or_create(basket=basket, product=product
+                                                                  )
+    if not created:
+        basketline.quantity += 1
+        basketline.save()
+    return HttpResponseRedirect(
+        reverse("product", args=(product.slug,))
+    )
+
+
+def manage_basket(request):
+    if not request.basket:
+        return render(request, "basket.html", {"formset": None})
+    if request.method == "POST":
+        formset = forms.BasketLineFormSet(
+            request.POST, instance=request.basket
+        )
+        if formset.is_valid():
+            formset.save()
+    else:
+        formset = forms.BasketLineFormSet(
+            instance=request.basket
+        )
+    if request.basket.is_empty():
+        return render(request, "basket.html", {"formset": None})
+
+    return render(request, "basket.html", {"formset": formset})

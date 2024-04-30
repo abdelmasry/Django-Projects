@@ -1,0 +1,31 @@
+<div class="input-group">
+    <input
+        type="number"
+        name="{{ widget.name }}"
+        class="form-control quantity-number"
+        value="{{ widget.value }}"
+        min="1"
+        max="10"
+        {% include "django/forms/widgets/attrs.html" %} />
+    <br>
+    <span class="input-group-btn">
+        <button
+            type="button"
+            class="btn btn-default btn-number btn-minus"
+            data-type="minus"
+            data-field="{{ widget.name }}"
+            style="background-color: red; color: white">
+            -
+        </button>
+    </span><br>
+    <span class="input-group-btn">
+        <button
+            type="button"
+            class="btn btn-default btn-number btn-plus"
+            data-type="plus"
+            data-field="{{ widget.name }}"
+            style="background-color: #04AA6D; color: black">
+            +
+        </button>
+    </span>
+</div>

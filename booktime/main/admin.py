@@ -1,8 +1,10 @@
+from . import models
 from django.contrib import admin
 from django.utils.html import format_html
-from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
+from django.contrib.auth.admin import (
+    UserAdmin as DjangoUserAdmin
+)
 
-from . import models
 
 
 class ProductTagAdmin(admin.ModelAdmin):
