@@ -1,10 +1,7 @@
 from . import models
 from django.contrib import admin
 from django.utils.html import format_html
-from django.contrib.auth.admin import (
-    UserAdmin as DjangoUserAdmin
-)
-
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
 
 class ProductTagAdmin(admin.ModelAdmin):
@@ -20,9 +17,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ("in_stock",)
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
-
-
-
 
 
 class ProductImageAdmin(admin.ModelAdmin):
@@ -42,14 +36,11 @@ class ProductImageAdmin(admin.ModelAdmin):
         return obj.product.name
 
 
-
-
-
 @admin.register(models.User)
 class UserAdmin(DjangoUserAdmin):
 
-#    Here we have redefined the configuration for the Django admin to suit our custom User model. 
- #   Specifically, we have modified the contents of some class variables.
+    #    Here we have redefined the configuration for the Django admin to suit our custom User model.
+    #   Specifically, we have modified the contents of some class variables.
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
@@ -91,6 +82,61 @@ class UserAdmin(DjangoUserAdmin):
     )
     search_fields = ("email", "first_name", "last_name")
     ordering = ("email",)
+
+
+class BasketLineInline(admin.TabularInline):
+    model = models.BasketLine
+    raw_id_fields = ("product",)
+
+
+@admin.register(models.Basket)
+class BasketAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "status", "count")
+    list_editable = ("status",)
+    list_filter = ("status",)
+    inlines = (BasketLineInline,)
+
+
+class OrderLineInline(admin.TabularInline):
+    model = models.OrderLine
+    raw_id_fields = ("product",)
+
+
+@admin.register(models.Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "status")
+    list_editable = ("status",)
+    list_filter = ("status", "shipping_country", "date_added")
+    inlines = (OrderLineInline,)
+    fieldsets = (
+        (None, {"fields": ("user", "status")}),
+        (
+            "Billing info",
+            {
+                "fields": (
+                    "billing_name",
+                    "billing_address1",
+                    "billing_address2",
+                    "billing_zip_code",
+                    "billing_city",
+                    "billing_country",
+                )
+            },
+        ),
+        (
+            "Shipping info",
+            {
+                "fields": (
+                    "shipping_name",
+                    "shipping_address1",
+                    "shipping_address2",
+                    "shipping_zip_code",
+                    "shipping_city",
+                    "shipping_country",
+                )
+            },
+        ),
+    )
 
 
 admin.site.register(models.ProductImage, ProductImageAdmin)
