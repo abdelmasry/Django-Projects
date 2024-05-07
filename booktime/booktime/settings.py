@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,16 +29,14 @@ SECRET_KEY = "django-insecure-d&^f_nx91eu=yc5a3cgvj@x8fl4)8t8u*q-o+5jl7a4v@(4x2s
 DEBUG = True
 
 if not DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST_USER = "username"
-    EMAIL_HOST = 'smtp.domain.com'
+    EMAIL_HOST = "smtp.domain.com"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = "password"
 else:
-    EMAIL_BACKEND = (
-        "django.core.mail.backends.console.EmailBackend"
-    )
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ALLOWED_HOSTS = []
 
@@ -49,7 +50,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "main"
+    "main",
+    "webpack_loader",
 ]
 
 MIDDLEWARE = [
@@ -60,7 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'main.middlewares.basket_middleware',
+    "main.middlewares.basket_middleware",
 ]
 
 ROOT_URLCONF = "booktime.urls"
@@ -81,6 +83,14 @@ TEMPLATES = [
     },
 ]
 
+WEBPACK_LOADER = {
+    "DEFAULT": {
+        "BUNDLE_DIR_NAME": "bundles/",
+        "STATS_FILE": os.path.join(BASE_DIR, "webpack-stats.json"),
+    }
+}
+
+
 WSGI_APPLICATION = "booktime.wsgi.application"
 
 
@@ -89,14 +99,14 @@ WSGI_APPLICATION = "booktime.wsgi.application"
 
 DATABASES = {
     "default": {
-        #"ENGINE": "django.db.backends.sqlite3",
-        #"NAME": BASE_DIR / "db.sqlite3",
-       'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'abdelrahmanibrahim',
-        'PASSWORD': 'Cr58915891&',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        # "ENGINE": "django.db.backends.sqlite3",
+        # "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "postgres",
+        "USER": "abdelrahmanibrahim",
+        "PASSWORD": "Cr58915891&",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 

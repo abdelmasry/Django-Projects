@@ -82,6 +82,15 @@ class AddressListView(LoginRequiredMixin, ListView):
 
 
 class AddressCreateView(LoginRequiredMixin, CreateView):
+    """
+        In your case, since you're using 
+        a CreateView with the Address model,
+        Django will look for a template named address_form.html 
+        by default. This is part of Django's convention 
+        over configuration principle, 
+        where it tries to infer the template name based 
+        on the model name and the type of view being used.
+    """
     model = models.Address
     fields = [
         "name",
@@ -170,3 +179,28 @@ def manage_basket(request):
         return render(request, "basket.html", {"formset": None})
 
     return render(request, "basket.html", {"formset": formset})
+
+class AddressSelectionView(LoginRequiredMixin, FormView): 
+    template_name = "address_select.html"
+    form_class = forms.AddressSelectionForm
+    success_url = reverse_lazy('checkout_done')
+    def get_form_kwargs(self):
+        """extracts the user from the request and returns it in a dictionary"""
+        kwargs = super().get_form_kwargs() 
+        kwargs['user'] = self.request.user 
+        return kwargs
+    
+    def form_valid(self, form):
+        """
+        Delete the basket from the session 
+        Call the create_order() method on it, with the submitted addresses data.
+        """
+
+        del self.request.session['basket_id'] 
+        basket = self.request.basket 
+        basket.create_order(
+                form.cleaned_data['billing_address'],
+                form.cleaned_data['shipping_address']
+            )
+        return super().form_valid(form)
+    
