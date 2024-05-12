@@ -13,11 +13,14 @@
         </library>
       </libraries>
     </data-source>
-    <data-source source="LOCAL" name="postgres@127.0.0.1" uuid="33e4e349-72bf-49b7-ab67-e1e26aec4127">
-      <driver-ref>postgresql</driver-ref>
+    <data-source source="LOCAL" name="LOLO" uuid="a33a816e-92fb-4cee-8515-d16e30bca5c9">
+      <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://127.0.0.1:5432/postgres</jdbc-url>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="APPROVED_DRIVER" value="mysql.8" />
+      </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

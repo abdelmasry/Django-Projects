@@ -103,8 +103,8 @@ DATABASES = {
         # "NAME": BASE_DIR / "db.sqlite3",
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "postgres",
-        "USER": "abdelrahmanibrahim",
-        "PASSWORD": "Cr58915891&",
+        "USER": os.environ.get["POSTGRES_USER"],
+        "PASSWORD": os.environ.get["POSTGRES_PASS"],
         "HOST": "localhost",
         "PORT": "5432",
     }
