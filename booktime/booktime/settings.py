@@ -18,7 +18,6 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -50,11 +49,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "main",
     "webpack_loader",
+    "django_extensions",
+    "debug_toolbar",
+    "django_tables2",
+    "widget_tweaks",
+    "rest_framework",
+    "main.apps.MainConfig",
 ]
 
+
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -64,6 +70,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "main.middlewares.basket_middleware",
 ]
+
 
 ROOT_URLCONF = "booktime.urls"
 
@@ -102,9 +109,9 @@ DATABASES = {
         # "ENGINE": "django.db.backends.sqlite3",
         # "NAME": BASE_DIR / "db.sqlite3",
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "postgres",
-        "USER": os.environ.get["POSTGRES_USER"],
-        "PASSWORD": os.environ.get["POSTGRES_PASS"],
+        "NAME": "booktime",
+        "USER": "abdelrahmanibrahim",  # os.environ.get["POSTGRES_USER"],
+        "PASSWORD": "Cr58915819&",  # os.environ.get["POSTGRES_PASS"],
         "HOST": "localhost",
         "PORT": "5432",
     }
@@ -157,3 +164,21 @@ MEDIA_URL = "/media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = "/"
+
+INTERNAL_IPS = ["127.0.0.1"]
+
+
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.DjangoModelPermissions",
+    ),
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 100,
+}
